@@ -1,6 +1,6 @@
 /**
  * Dashboard Extended - JavaScript para paneles IoT
- * Promotora Palmera de Antioquia S.A.S.
+ * Proyecto de Grado
  * Fecha: 20 de febrero de 2026
  */
 

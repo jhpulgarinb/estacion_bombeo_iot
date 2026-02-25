@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Generador de Alertas Automáticas Simuladas
-Promotora Palmera de Antioquia S.A.S.
+Proyecto de grado
 """
 
 import requests

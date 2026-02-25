@@ -1,6 +1,6 @@
 """
 Sistema de Control Automático de Bombeo
-Promotora Palmera de Antioquia S.A.S.
+Proyecto de grado
 
 Lógica de decisión basada en:
 - Nivel de agua

@@ -1,13 +1,13 @@
 -- ============================================================
 -- SISTEMA IoT ESTACIÓN DE BOMBEO - MySQL Database Schema
--- Promotora Palmera de Antioquia S.A.S.
+-- Proyecto de grado
 -- Fecha: 21 de febrero de 2026
--- Base de datos: promotorapalmera_db
+-- Base de datos: estacion_bombeo
 -- VERSIÓN EN ESPAÑOL
 -- ============================================================
 
 -- Usar la base de datos existente
-USE promotorapalmera_db;
+USE estacion_bombeo;
 
 -- ============================================================
 -- TABLAS PARA SISTEMA DE ESTACIÓN DE BOMBEO

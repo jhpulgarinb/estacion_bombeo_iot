@@ -66,7 +66,7 @@ $settings = New-ScheduledTaskSettingsSet `
     -MultipleInstances IgnoreNew
 
 # Crear descripción
-$description = "Iniciador automático del servidor HTTPS/HTTP para Promotora Palmera"
+$description = "Iniciador automático del servidor HTTPS/HTTP para Proyecto de Grado"
 
 # Crear y registrar la tarea
 try {

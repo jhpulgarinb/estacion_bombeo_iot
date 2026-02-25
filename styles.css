@@ -8,7 +8,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     color: #333;
     min-height: 100vh;
 }
@@ -62,7 +62,7 @@ header h1 {
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -75,7 +75,7 @@ header h1 {
 .docs-link:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
 }
 
 .docs-link .icon {
@@ -117,7 +117,7 @@ header h1 {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #3498db, #2ecc71);
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
 }
 
 .card h3 {
@@ -164,7 +164,7 @@ header h1 {
 
 .gauge-fill {
     height: 100%;
-    background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
+    background: linear-gradient(90deg, #1e40af, #2563eb, #3b82f6);
     border-radius: 4px;
     width: 0%;
     transition: width 0.8s ease-in-out;
@@ -379,7 +379,7 @@ header h1 {
 }
 
 .weather-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     border-radius: 10px;
     padding: 20px;
     color: white;
@@ -498,7 +498,7 @@ input:checked + .slider:before {
 }
 
 .control-header {
-    background: linear-gradient(135deg, #3498db, #2980b9);
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
     color: white;
     padding: 15px;
     display: flex;
@@ -850,44 +850,44 @@ input:checked + .slider:before {
 
 /* Tooltips con colores específicos para alertas */
 [data-tooltip-type="critical"]::before {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 [data-tooltip-type="critical"]::after {
-    border-top-color: #e74c3c;
+    border-top-color: #dc2626;
 }
 
 [data-tooltip-type="warning"]::before {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
 }
 
 [data-tooltip-type="warning"]::after {
-    border-top-color: #f39c12;
+    border-top-color: #1d4ed8;
 }
 
 [data-tooltip-type="info"]::before {
-    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
 
 [data-tooltip-type="info"]::after {
-    border-top-color: #3498db;
+    border-top-color: #2563eb;
 }
 
 [data-tooltip-type="success"]::before {
-    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
 }
 
 [data-tooltip-type="success"]::after {
-    border-top-color: #27ae60;
+    border-top-color: #1e40af;
 }
 
 /* Animación de pulsación para elementos con tooltips críticos */
 @keyframes pulse-border {
     0%, 100% {
-        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+        box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.7);
     }
     50% {
-        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+        box-shadow: 0 0 0 10px rgba(30, 64, 175, 0);
     }
 }
 
@@ -902,7 +902,7 @@ input:checked + .slider:before {
     height: 16px;
     line-height: 16px;
     text-align: center;
-    background: #3498db;
+    background: #2563eb;
     color: white;
     border-radius: 50%;
     font-size: 12px;

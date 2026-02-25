@@ -1,6 +1,6 @@
 """
 Endpoints API Extendidos - Sistema de Automatización
-Promotora Palmera de Antioquia S.A.S.
+Proyecto de grado
 
 Nuevos endpoints para:
 - Telemetría meteorológica

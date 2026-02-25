@@ -13,7 +13,7 @@ title Sistema IoT Bombeo - Iniciador Maestro
 cls
 echo.
 echo  =====================================================================
-echo    SISTEMA IOT BOMBEO - PROMOTORA PALMERA
+echo    SISTEMA IOT BOMBEO - PROYECTO DE GRADO
 echo  =====================================================================
 echo.
 echo  Estado del Sistema:

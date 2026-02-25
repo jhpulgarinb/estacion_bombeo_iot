@@ -203,7 +203,7 @@ class AlertManager:
                     </p>
                     <hr style="border: none; border-top: 1px solid #e5e7eb;">
                     <p style="font-size: 12px; color: #6b7280;">
-                        Sistema de Monitoreo Automatizado - Promotora Palmera de Antioquia S.A.S.<br>
+                        Sistema de Monitoreo Automatizado - Proyecto de grado<br>
                         Este es un mensaje automático, no responder.
                     </p>
                 </div>
