@@ -1,0 +1,1 @@
+pip install flask flask-sqlalchemy flask-cors paho-mqtt psycopg2-binary

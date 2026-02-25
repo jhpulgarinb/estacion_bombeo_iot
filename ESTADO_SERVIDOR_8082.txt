@@ -1,0 +1,119 @@
+========================================
+SERVIDOR HTTPS PUERTO 8082 - ACTIVO
+========================================
+
+ESTADO:
+✓ Servidor corriendo en puerto 8082
+✓ HTTPS activo y escuchando
+✓ Certificado SSL autofirmado instalado
+✓ Puerto abierto indefinidamente
+
+========================================
+ACCESO DESDE CELULAR
+========================================
+
+URL PRINCIPAL (RECOMENDADO):
+  https://192.168.1.34:8082/uploads/nomina/consulta_planilla_publica.html
+
+PASOS:
+  1. Abre el navegador (Chrome, Safari, Firefox)
+  2. Pega la URL arriba
+  3. Veras: "Tu conexion no es privada" o similar
+  4. Toca "Avanzado" o "Detalles"
+  5. Toca "Continuar" o "Ir al sitio web (no es seguro)"
+  6. ¡La pagina cargara!
+  
+NOTA: El navegador recordara la decision para futuras visitas
+
+
+========================================
+URL ALTERNATIVA (SIN SSL para PC)
+========================================
+
+Si no funciona HTTPS, prueba HTTP via IIS:
+  http://www.ppasas.com:8081/uploads/nomina/consulta_planilla_publica.html
+
+
+========================================
+INFORMACION TÉCNICA
+========================================
+
+Servidor: Python servidor_8082_robusto.py
+Puerto: 8082 (HTTPS)
+Certificado: server.crt (autofirmado, válido 1 año)
+Clave privada: server.key (RSA 2048-bit)
+Directorio: c:\inetpub\promotorapalmera
+Archivo de ejecución: project_estacion_bombeo\servidor_8082_robusto.py
+
+Características del servidor:
+- Maneja múltiples conexiones simultáneas
+- Timeout de 5 minutos por conexión
+- Keep-alive activo para conexiones persistentes
+- CORS habilitado para desarrollo
+- Logging de peticiones
+
+
+========================================
+MANTENER EL SERVIDOR CORRIENDO
+========================================
+
+OPCION 1 - Watchdog automático (RECOMENDADO):
+  Ejecuta en CMD/PowerShell como administrador:
+  c:\inetpub\promotorapalmera\project_estacion_bombeo\WATCHDOG_8082.bat
+
+OPCION 2 - Monitoreo en PowerShell:
+  powershell -NoProfile -ExecutionPolicy Bypass -File "c:\inetpub\promotorapalmera\project_estacion_bombeo\CHECK_SERVIDOR_8082.ps1"
+
+OPCION 3 - Iniciar manualmente (sin monitoreo):
+  En CMD, ejecuta:
+  cd c:\inetpub\promotorapalmera\project_estacion_bombeo
+  python servidor_8082_robusto.py
+
+
+========================================
+VERIFICAR ESTADO
+========================================
+
+1. Desde PowerShell:
+   $c = Get-NetTCPConnection -LocalPort 8082 -ErrorAction SilentlyContinue
+   if ($c) { "Puerto 8082 ACTIVO" } else { "NO ACTIVO" }
+
+2. Ver log del monitor:
+   Get-Content c:\inetpub\promotorapalmera\project_estacion_bombeo\monitor_8082.log -Tail 10
+
+3. Ver procesos Python:
+   Get-Process python
+
+
+========================================
+SOLUCIONAR PROBLEMAS
+========================================
+
+Problema: "Connection refused" desde celular
+Solución:
+  1. Verifica que ambas maquinas esten en mismo WiFi
+  2. Cambia 192.168.1.34 por la IP correcta de tu servidor
+  3. Ejecuta: ipconfig (en CMD)
+  4. Busca "IPv4 Address" que empiece con 192.168
+
+Problema: Certificado no válido
+Solución:
+  - Normal porque es autofirmado
+  - Continua a través del aviso
+  - Es seguro para uso interno
+
+Problema: El servidor se detiene solo
+Solución:
+  - Usa WATCHDOG_8082.bat que lo reinicia automáticamente
+  - O usa CHECK_SERVIDOR_8082.ps1 para monitoreo
+
+
+========================================
+ESTADISTICAS
+========================================
+
+Fecha: 23 de Febrero de 2026
+Servidor iniciado correctamente
+Conforme para uso inmediato
+
+Puedes acceder ahora desde tu celular!

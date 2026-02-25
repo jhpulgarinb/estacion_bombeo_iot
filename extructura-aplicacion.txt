@@ -1,0 +1,13 @@
+/app
+  /backend
+    app.py              # Aplicación Flask principal
+    database.py         # Configuración y modelos de base de datos
+    mqtt_client.py      # Cliente MQTT para recibir datos
+    config.py           # Configuración
+  /frontend
+    index.html          # Dashboard principal
+    styles.css          # Estilos
+    script.js           # Funcionalidad del dashboard
+  /utils
+    calculations.py     # Cálculos de caudal y conversiones
+  requirements.txt      # Dependencias de Python

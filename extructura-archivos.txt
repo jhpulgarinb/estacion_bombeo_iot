@@ -1,0 +1,29 @@
+/monitoreo_compuertas
+│
+├── /backend
+│   ├── app.py                 # Aplicación Flask principal
+│   ├── config.py              # Configuración de la aplicación
+│   ├── database.py            # Modelos de base de datos
+│   ├── calculations.py        # Funciones de cálculo hidráulico
+│   ├── mqtt_client.py         # Cliente MQTT para recepción de datos
+│   └── requirements.txt       # Dependencias de Python
+│
+├── /frontend
+│   ├── index.html             # Dashboard principal
+│   ├── styles.css             # Estilos CSS
+│   ├── script.js              # Lógica JavaScript del dashboard
+│   └── favicon.ico            # Icono de la aplicación
+│
+├── /docs
+│   ├── INSTALACION.md         # Guía de instalación completa
+│   ├── CONFIGURACION.md       # Guía de configuración
+│   └── API_REFERENCE.md       # Referencia de la API
+│
+├── /database
+│   ├── schema.sql             # Esquema de base de datos
+│   └── sample_data.sql        # Datos de ejemplo
+│
+├── /utils
+│   └── data_simulator.py      # Simulador de datos para pruebas
+│
+└── docker-compose.yml         # Configuración Docker para despliegue

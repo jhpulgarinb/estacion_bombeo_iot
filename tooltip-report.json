@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-02-22T19:50:22.715361",
+  "status": "OK",
+  "files": {
+    "index.html": {
+      "exists": true,
+      "size_bytes": 24454,
+      "description": "HTML principal del dashboard",
+      "has_script_tag": true,
+      "tooltip_count": 33,
+      "all_tooltips_filled": true
+    },
+    "tooltip-system.js": {
+      "exists": true,
+      "size_bytes": 11129,
+      "description": "Sistema de tooltips JavaScript",
+      "has_class": true,
+      "has_init": true,
+      "has_discover": true
+    },
+    "styles.css": {
+      "exists": true,
+      "size_bytes": 17306,
+      "description": "Estilos CSS",
+      "old_tooltips_disabled": true
+    },
+    "script.js": {
+      "exists": true,
+      "size_bytes": 32373,
+      "description": "Script principal"
+    },
+    "test-tooltips.html": {
+      "exists": true,
+      "size_bytes": 5340,
+      "description": "Archivo de prueba"
+    }
+  },
+  "issues": []
+}

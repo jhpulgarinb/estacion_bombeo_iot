@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "author": "Promotora Palmera de Antioquia S.A.S.",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -57.6,
+      "left": 124.8,
+      "attrs": { "temperature": "28.5", "humidity": "75" }
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "ultrasonic1",
+      "top": -124.35,
+      "left": -86.55,
+      "attrs": { "distance": "150" }
+    },
+    {
+      "type": "wokwi-analog-joystick",
+      "id": "joystick1",
+      "top": -249.6,
+      "left": 0,
+      "rotate": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 124.8,
+      "left": -48,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 124.8,
+      "left": 9.6,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 124.8,
+      "left": 67.2,
+      "attrs": { "color": "blue" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": 124.8,
+      "left": 211.2,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn2",
+      "top": 182.4,
+      "left": 211.2,
+      "attrs": { "color": "red" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "dht1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "dht1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "dht1:SDA", "esp:D15", "green", [ "v0" ] ],
+    [ "ultrasonic1:VCC", "esp:VIN", "red", [ "v0" ] ],
+    [ "ultrasonic1:GND", "esp:GND.2", "black", [ "v0" ] ],
+    [ "ultrasonic1:TRIG", "esp:D5", "blue", [ "v0" ] ],
+    [ "ultrasonic1:ECHO", "esp:D18", "yellow", [ "v0" ] ],
+    [ "joystick1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "joystick1:VERT", "esp:D34", "green", [ "v0" ] ],
+    [ "joystick1:HORZ", "esp:D35", "blue", [ "v0" ] ],
+    [ "joystick1:SEL", "esp:D32", "yellow", [ "v0" ] ],
+    [ "joystick1:GND", "esp:GND.3", "black", [ "v0" ] ],
+    [ "led1:A", "esp:D2", "green", [ "v0" ] ],
+    [ "led1:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "led2:A", "esp:D4", "red", [ "v0" ] ],
+    [ "led2:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "led3:A", "esp:D16", "blue", [ "v0" ] ],
+    [ "led3:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "btn1:1.l", "esp:D21", "green", [ "v0" ] ],
+    [ "btn1:2.l", "esp:GND.2", "black", [ "v0" ] ],
+    [ "btn2:1.l", "esp:D19", "red", [ "v0" ] ],
+    [ "btn2:2.l", "esp:GND.2", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

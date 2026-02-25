@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Meteorológico - Estación de Bombeo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .card-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-unit {
+            font-size: 12px;
+            color: #999;
+            margin-left: 5px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            height: 400px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            max-height: 350px;
+        }
+
+        .status {
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .status.error {
+            color: #dc3545;
+            background: #ffebee;
+        }
+
+        .temperature { color: #ff6b6b; }
+        .humidity { color: #4ecdc4; }
+        .wind { color: #95e1d3; }
+        .pressure { color: #ffd93d; }
+        .solar { color: #ff9ff3; }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .card-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cloud"></i> Dashboard Meteorológico</h1>
+            <p class="subtitle">Monitoreo en tiempo real de la estación meteorológica</p>
+            <div class="status" id="connectionStatus">
+                <i class="fas fa-circle"></i> Conectando...
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon temperature">
+                    <i class="fas fa-thermometer-half"></i>
+                </div>
+                <div class="card-label">Temperatura</div>
+                <div class="card-value">
+                    <span id="temperature">--</span>
+                    <span class="card-unit">°C</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon humidity">
+                    <i class="fas fa-droplet"></i>
+                </div>
+                <div class="card-label">Humedad</div>
+                <div class="card-value">
+                    <span id="humidity">--</span>
+                    <span class="card-unit">%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon wind">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <div class="card-label">Velocidad Viento</div>
+                <div class="card-value">
+                    <span id="windSpeed">--</span>
+                    <span class="card-unit">m/s</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon pressure">
+                    <i class="fas fa-gauge"></i>
+                </div>
+                <div class="card-label">Presión</div>
+                <div class="card-value">
+                    <span id="pressure">--</span>
+                    <span class="card-unit">hPa</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon solar">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="card-label">Radiación Solar</div>
+                <div class="card-value">
+                    <span id="solarRadiation">--</span>
+                    <span class="card-unit">W/m²</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-cloud-rain" style="color: #3b82f6;"></i>
+                </div>
+                <div class="card-label">Precipitación</div>
+                <div class="card-value">
+                    <span id="precipitation">--</span>
+                    <span class="card-unit">mm</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <div class="chart-container">
+                <div class="chart-title">Temperatura (últimas 24h)</div>
+                <canvas id="temperatureChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Humedad (últimas 24h)</div>
+                <canvas id="humidityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <div class="chart-container">
+                <div class="chart-title">Velocidad del Viento (últimas 24h)</div>
+                <canvas id="windChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Radiación Solar (últimas 24h)</div>
+                <canvas id="solarChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MeteorologicalDashboard {
+            constructor() {
+                this.apiBase = this.detectApiBase();
+                this.refreshInterval = 10000; // 10 segundos
+                this.historicalData = [];
+                this.charts = {};
+                this.init();
+            }
+
+            detectApiBase() {
+                const protocol = window.location.protocol;
+                const hostname = window.location.hostname;
+                const port = window.location.port;
+                
+                if (port === '9000') {
+                    return `${protocol}//${hostname}:${port}`;
+                }
+                return `${protocol}//${hostname}:9000`;
+            }
+
+            init() {
+                this.initCharts();
+                this.startRefresh();
+            }
+
+            initCharts() {
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } }
+                };
+
+                // Temperatura
+                this.charts.temperature = new Chart(document.getElementById('temperatureChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Temperatura (°C)',
+                            data: [],
+                            borderColor: 'rgb(255, 107, 107)',
+                            backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: commonOptions
+                });
+
+                // Humedad
+                this.charts.humidity = new Chart(document.getElementById('humidityChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Humedad (%)',
+                            data: [],
+                            borderColor: 'rgb(78, 205, 196)',
+                            backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: commonOptions
+                });
+
+                // Viento
+                this.charts.wind = new Chart(document.getElementById('windChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Velocidad (m/s)',
+                            data: [],
+                            borderColor: 'rgb(149, 225, 211)',
+                            backgroundColor: 'rgba(149, 225, 211, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: commonOptions
+                });
+
+                // Solar
+                this.charts.solar = new Chart(document.getElementById('solarChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Radiación (W/m²)',
+                            data: [],
+                            borderColor: 'rgb(255, 159, 243)',
+                            backgroundColor: 'rgba(255, 159, 243, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: commonOptions
+                });
+            }
+
+            async fetchData() {
+                try {
+                    const response = await fetch(`${this.apiBase}/api/meteorology/latest?station_id=1`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const meteo = data.data || {};
+
+                    let windMs = meteo.velocidad_viento_ms;
+                    if (windMs === undefined || windMs === null) {
+                        const windKmh = meteo.velocidad_viento_kmh;
+                        windMs = windKmh ? (windKmh / 3.6) : 0;
+                    }
+
+                    const pressure = (meteo.presion_hpa !== undefined && meteo.presion_hpa !== null)
+                        ? meteo.presion_hpa
+                        : (meteo.presion_atmosferica_hpa !== undefined && meteo.presion_atmosferica_hpa !== null)
+                            ? meteo.presion_atmosferica_hpa
+                            : 1013;
+
+                    // Actualizar valores
+                    document.getElementById('temperature').textContent = (meteo.temperatura_c || 0).toFixed(1);
+                    document.getElementById('humidity').textContent = (meteo.humedad_porcentaje || 0).toFixed(0);
+                    document.getElementById('windSpeed').textContent = (windMs || 0).toFixed(1);
+                    document.getElementById('pressure').textContent = (pressure || 1013).toFixed(0);
+                    document.getElementById('solarRadiation').textContent = (meteo.radiacion_solar_wm2 || 0).toFixed(0);
+                    document.getElementById('precipitation').textContent = (meteo.precipitacion_mm || 0).toFixed(1);
+
+                    // Actualizar histórico
+                    this.updateHistoricalData({
+                        ...meteo,
+                        velocidad_viento_ms: windMs
+                    });
+                    this.updateCharts();
+
+                    this.updateStatus('connected');
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    this.updateStatus('error');
+                }
+            }
+
+            updateHistoricalData(data) {
+                const timestamp = new Date(data.fecha_hora || new Date());
+                const timeString = timestamp.toLocaleTimeString();
+
+                this.historicalData.push({
+                    timestamp: timeString,
+                    temperature: data.temperatura_c || 0,
+                    humidity: data.humedad_porcentaje || 0,
+                    windSpeed: data.velocidad_viento_ms || 0,
+                    solarRadiation: data.radiacion_solar_wm2 || 0
+                });
+
+                // Mantener últimos 144 puntos (24h cada 10 minutos)
+                if (this.historicalData.length > 144) {
+                    this.historicalData.shift();
+                }
+            }
+
+            updateCharts() {
+                const labels = this.historicalData.map(d => d.timestamp);
+                
+                this.charts.temperature.data.labels = labels;
+                this.charts.temperature.data.datasets[0].data = this.historicalData.map(d => d.temperature);
+                this.charts.temperature.update();
+
+                this.charts.humidity.data.labels = labels;
+                this.charts.humidity.data.datasets[0].data = this.historicalData.map(d => d.humidity);
+                this.charts.humidity.update();
+
+                this.charts.wind.data.labels = labels;
+                this.charts.wind.data.datasets[0].data = this.historicalData.map(d => d.windSpeed);
+                this.charts.wind.update();
+
+                this.charts.solar.data.labels = labels;
+                this.charts.solar.data.datasets[0].data = this.historicalData.map(d => d.solarRadiation);
+                this.charts.solar.update();
+            }
+
+            updateStatus(status) {
+                const element = document.getElementById('connectionStatus');
+                if (status === 'connected') {
+                    element.className = 'status';
+                    element.innerHTML = '<i class="fas fa-circle"></i> Conectado';
+                } else {
+                    element.className = 'status error';
+                    element.innerHTML = '<i class="fas fa-circle"></i> Error de conexión';
+                }
+            }
+
+            startRefresh() {
+                this.fetchData();
+                setInterval(() => this.fetchData(), this.refreshInterval);
+            }
+        }
+
+        // Iniciar dashboard cuando carga el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            new MeteorologicalDashboard();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,72 @@
+========================================
+ACCESO DESDE CELULAR - GUIA RAPIDA
+========================================
+
+CONFIGURACION ACTUAL:
+- Puerto 8082 = HTTPS (para moviles)
+- Puerto 8081 = HTTP (IIS alternativo)
+- Servidor: activo y ejecutandose
+
+=============================================
+OPCION 1: Desde celular (RECOMENDADO)
+=============================================
+
+URL:
+  https://192.168.1.34:8082/uploads/nomina/consulta_planilla_publica.html
+
+Pasos:
+  1. Abre el navegador del celular (Chrome, Safari, Firefox)
+  2. Copia y pega la URL arriba
+  3. Veras un aviso: "Tu conexion no es privada" o similar
+  4. Haz clic en "Avanzado" o "Detalles"
+  5. Busca la opcion "Continuar" o "Ir al sitio (no es seguro)"
+  6. Haz clic en "Continuar"
+  7. ¡Listo! La pagina cargara normalmente
+
+Nota: El navegador recordara tu decision para futuras visitas
+
+
+=============================================
+OPCION 2: Desde PC (si no tienes IIS)
+=============================================
+
+URL HTTP:
+  http://192.168.1.34:8082/uploads/nomina/consulta_planilla_publica.html
+
+(Esta es HTTP sin SSL, carga directamente sin aviso de seguridad)
+
+
+=============================================
+SI TIENES PROBLEMAS
+=============================================
+
+Problema: "No se puede conectar"
+Solucion:
+  - Verifica que ambas maquinas esten en la misma red WiFi
+  - Cambia 192.168.1.34 por la IP correcta de tu servidor
+  - Abre cmd y ejecuta: ipconfig
+  - Busca la IP que empieza con 192.168
+
+Problema: "Certificado no valido"
+Solucion:
+  - Es NORMAL porque es un certificado autofirmado
+  - Continua a traves del aviso de seguridad
+  - En futuras visitas no volvera a aparecer
+
+
+=============================================
+INFORMACION DEL SERVIDOR
+=============================================
+
+Servidor: Python HTTP/HTTPS
+Puerto HTTPS: 8082
+Certificado: Autofirmado (valido 1 anio)
+Directorio: c:\inetpub\promotorapalmera\project_estacion_bombeo
+
+Para reiniciar el servidor:
+  1. Abre CMD o PowerShell
+  2. Ejecuta: powershell -NoProfile -ExecutionPolicy Bypass -File "c:\inetpub\promotorapalmera\project_estacion_bombeo\INICIAR_SERVIDOR.ps1"
+
+O haz doble clic en:
+  INICIAR_SERVIDOR.bat
+

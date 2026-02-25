@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Monitoreo - Estación de Bombeo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="tooltip-system.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header mejorado -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-water"></i>
+                    <div>
+                        <h1>Sistema de Monitoreo de Estación de Bombeo</h1>
+                        <p class="subtitle">Control y Supervisión en Tiempo Real</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <div class="connection-status" id="connectionStatus">
+                        <i class="fas fa-circle" id="statusIcon"></i>
+                        <span id="statusText">Conectando...</span>
+                    </div>
+                    <div class="station-selector">
+                        <label for="stationSelect">Estación:</label>
+                        <select id="stationSelect">
+                            <option value="1">Estación Principal Norte</option>
+                            <option value="2">Estación Principal Sur</option>
+                            <option value="3">Estación Auxiliar Este</option>
+                            <option value="4">Estación de Emergencia</option>
+                        </select>
+                    </div>
+                    <div class="refresh-controls">
+                        <button id="refreshBtn" class="btn-icon" title="Actualizar datos">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <div class="auto-refresh">
+                            <input type="checkbox" id="autoRefresh" checked>
+                            <label for="autoRefresh">Auto</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard principal -->
+        <main class="dashboard">
+            <!-- Tarjetas de estado mejoradas -->
+            <section class="status-overview">
+                <div class="status-cards">
+                    <div class="card primary" data-tooltip="Estado y apertura de la compuerta principal. El porcentaje controla el caudal." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="card-header">
+                            <i class="fas fa-door-open"></i>
+                            <h3>Estado de Compuerta</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="status-indicator">
+                                <div class="status-value" id="gateStatus">-</div>
+                                <div class="status-badge" id="gateStatusBadge">DESCONOCIDO</div>
+                            </div>
+                            <div class="gauge-container">
+                                <div class="gauge">
+                                    <div class="gauge-fill" id="gateGauge"></div>
+                                    <div class="gauge-text" id="gatePercentage">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small id="gateLastUpdate">Última actualización: -</small>
+                        </div>
+                    </div>
+                    
+                    <div class="card secondary" data-tooltip="Nivel instantaneo del agua en metros. Referencia: 0.5m minimo, 5.0m maximo." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="card-header">
+                            <i class="fas fa-tint"></i>
+                            <h3>Nivel de Agua</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="value-display">
+                                <div class="value" id="waterLevel">-</div>
+                                <div class="unit">metros</div>
+                            </div>
+                            <div class="level-indicator">
+                                <div class="level-bar">
+                                    <div class="level-fill" id="levelFill"></div>
+                                </div>
+                                <div class="level-labels">
+                                    <span>Mín</span>
+                                    <span>Máx</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card accent" data-tooltip="Caudal actual medido en m3/s. Refleja la descarga de la compuerta." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="card-header">
+                            <i class="fas fa-arrows-alt-h"></i>
+                            <h3>Caudal Actual</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="value-display">
+                                <div class="value" id="currentFlow">-</div>
+                                <div class="unit">m³/s</div>
+                            </div>
+                            <div class="flow-trend" id="flowTrend">
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Sin cambios</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card info" data-tooltip="Volumen total bombeado en el dia y avance frente a la meta diaria." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="card-header">
+                            <i class="fas fa-cube"></i>
+                            <h3>Volumen Diario</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="value-display">
+                                <div class="value" id="dailyVolume">-</div>
+                                <div class="unit">m³</div>
+                            </div>
+                            <div class="daily-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="dailyProgress"></div>
+                                </div>
+                                <small id="dailyTarget">Meta diaria: -</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel Meteorológico -->
+            <section class="weather-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cloud-sun-rain"></i> Estación Meteorológica<span class="tooltip-help-icon" data-tooltip="Datos meteorológicos actualizados cada 60 segundos. Pase el cursor sobre cada widget para más información." data-tooltip-position="bottom" data-tooltip-type="info"></span></h2>
+                    <small id="weatherLastUpdate">Última actualización: -</small>
+                </div>
+                <div class="weather-grid">
+                    <div class="weather-card" data-tooltip="Precipitacion actual y acumulado diario. >20mm/2h genera alerta." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="weather-icon"><i class="fas fa-cloud-rain"></i></div>
+                        <div class="weather-label">Precipitación</div>
+                        <div class="weather-value" id="weatherPrecip">-- mm</div>
+                        <div class="weather-sub" id="weatherPrecip24h">24h: --mm</div>
+                    </div>
+                    <div class="weather-card" data-tooltip="Velocidad y direccion del viento. >60 km/h genera alerta de vendaval." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="weather-icon"><i class="fas fa-wind"></i></div>
+                        <div class="weather-label">Viento</div>
+                        <div class="weather-value" id="weatherWind">-- km/h</div>
+                        <div class="weather-sub" id="weatherWindDir">--°</div>
+                    </div>
+                    <div class="weather-card" data-tooltip="Temperatura ambiente y humedad relativa. Rango normal: 18-35C, 40-90%." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="weather-icon"><i class="fas fa-thermometer-half"></i></div>
+                        <div class="weather-label">Temperatura</div>
+                        <div class="weather-value" id="weatherTemp">-- °C</div>
+                        <div class="weather-sub" id="weatherHumidity">Hum: --%</div>
+                    </div>
+                    <div class="weather-card" data-tooltip="Presion atmosferica y radiacion solar. <1005 hPa indica tormenta probable." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="weather-icon"><i class="fas fa-compress-alt"></i></div>
+                        <div class="weather-label">Presión Atm.</div>
+                        <div class="weather-value" id="weatherPressure">-- hPa</div>
+                        <div class="weather-sub" id="weatherSolar">Solar: -- W/m²</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel de Control Automático -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cogs"></i> Control Automático<span class="tooltip-help-icon" data-tooltip="Sistema de decisión basado en 6 reglas: nivel de agua, lluvia, tarifa eléctrica, temperatura motor, presión." data-tooltip-position="bottom" data-tooltip-type="info"></span></h2>
+                    <div class="control-mode-toggle" data-tooltip="AUTOMÁTICO: Sistema toma decisiones solo | MANUAL: Usted controla con botones" data-tooltip-position="left" data-tooltip-type="warning">
+                        <label class="switch">
+                            <input type="checkbox" id="autoControlToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="controlModeText">Modo Manual</span>
+                        <button id="stopSystemBtn" class="btn-control btn-stop" data-tooltip="Detener sistema: desactiva automático y apaga la bomba" data-tooltip-position="left" data-tooltip-type="critical">
+                            <i class="fas fa-stop"></i> Detener Sistema
+                        </button>
+                    </div>
+                </div>
+                <div class="control-grid">
+                    <div class="control-card pump-control" data-tooltip="Estado y telemetria de la bomba seleccionada." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="control-header">
+                            <h3><i class="fas fa-pump-soap"></i> Estado Bomba</h3>
+                            <div class="pump-status-badge" id="pumpStatusBadge">DESCONOCIDO</div>
+                        </div>
+                        <div class="control-body">
+                            <div class="pump-metrics">
+                                <div class="metric" data-tooltip="Caudal instantaneo de la bomba en m3/h." data-tooltip-position="right" data-tooltip-type="info">
+                                    <span class="metric-label">Caudal:</span>
+                                    <span class="metric-value" id="pumpFlow">-- m³/h</span>
+                                </div>
+                                <div class="metric" data-tooltip="Presion de entrada (succion) en bar." data-tooltip-position="right" data-tooltip-type="info">
+                                    <span class="metric-label">Presión Entrada:</span>
+                                    <span class="metric-value" id="pumpPressureIn">-- bar</span>
+                                </div>
+                                <div class="metric" data-tooltip="Presion de salida (descarga) en bar." data-tooltip-position="right" data-tooltip-type="info">
+                                    <span class="metric-label">Presión Salida:</span>
+                                    <span class="metric-value" id="pumpPressureOut">-- bar</span>
+                                </div>
+                                <div class="metric" data-tooltip="Temperatura del motor. >75C se marca en rojo." data-tooltip-position="right" data-tooltip-type="warning">
+                                    <span class="metric-label">Temp. Motor:</span>
+                                    <span class="metric-value" id="pumpMotorTemp">-- °C</span>
+                                </div>
+                                <div class="metric" data-tooltip="Consumo energetico estimado en kWh." data-tooltip-position="right" data-tooltip-type="info">
+                                    <span class="metric-label">Consumo:</span>
+                                    <span class="metric-value" id="pumpPower">-- kWh</span>
+                                </div>
+                                <div class="metric" data-tooltip="Horas acumuladas de operacion." data-tooltip-position="right" data-tooltip-type="info">
+                                    <span class="metric-label">Horas Operación:</span>
+                                    <span class="metric-value" id="pumpHours">-- h</span>
+                                </div>
+                            </div>
+                            <div class="manual-controls" id="manualControls" style="display: none;">
+                                <button id="startPumpBtn" class="btn-control btn-start" data-tooltip="Iniciar bomba manualmente. Verifique nivel de agua y temperatura motor antes." data-tooltip-position="top" data-tooltip-type="success">
+                                    <i class="fas fa-play"></i> Iniciar Bomba
+                                </button>
+                                <button id="stopPumpBtn" class="btn-control btn-stop" data-tooltip="Detener bomba manualmente. La bomba NO se reiniciará hasta que active modo automático." data-tooltip-position="top" data-tooltip-type="critical">
+                                    <i class="fas fa-stop"></i> Detener Bomba
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-card decision-log" data-tooltip="Ultima decision del control automatico y variables que influyeron." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="control-header">
+                            <h3><i class="fas fa-brain"></i> Última Decisión Automática</h3>
+                        </div>
+                        <div class="control-body">
+                            <div class="decision-info" id="lastDecision">
+                                <p class="decision-action"><i class="fas fa-info-circle"></i> Sin decisiones recientes</p>
+                                <p class="decision-reason">-</p>
+                                <div class="decision-context">
+                                    <small>Nivel: <span id="decisionLevel">-</span></small>
+                                    <small>Lluvia: <span id="decisionRain">-</span></small>
+                                    <small>Tarifa: <span id="decisionTariff">-</span></small>
+                                </div>
+                                <small class="decision-time" id="decisionTime">-</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alertas Activas (mejorado) -->
+            <section class="alerts-active-section" id="alertsActiveSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> Alertas Activas<span class="tooltip-help-icon" data-tooltip="Notificaciones en tiempo real. CRITICAL: requiere acción inmediata (<15 min) | HIGH: atención pronto (<1h) | MEDIUM: informativo" data-tooltip-position="bottom" data-tooltip-type="info"></span></h2>
+                    <div class="alerts-summary">
+                        <span class="alert-count critical" id="criticalCount" data-tooltip="Alertas CRÍTICAS: WhatsApp + Email + SMS. Requieren acción inmediata." data-tooltip-position="bottom" data-tooltip-type="critical">0</span>
+                        <span class="alert-count high" id="highCount" data-tooltip="Alertas ALTAS: WhatsApp + Email. Atender dentro de 1 hora." data-tooltip-position="bottom" data-tooltip-type="warning">0</span>
+                        <span class="alert-count medium" id="mediumCount" data-tooltip="Alertas MEDIAS: Solo Email. Informativas, atender cuando sea posible." data-tooltip-position="bottom" data-tooltip-type="info">0</span>
+                    </div>
+                </div>
+                <div class="alerts-active-grid" id="alertsActiveGrid">
+                    <div class="no-alerts">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No hay alertas activas</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de sensores virtuales -->
+            <section class="sensors-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-microchip"></i> Sensores Virtuales Activos</h2>
+                    <div class="sensor-controls">
+                        <span class="sensor-count" id="sensorCount">0 sensores</span>
+                        <button id="toggleSensors" class="btn-toggle">
+                            <i class="fas fa-play"></i> Activar
+                        </button>
+                    </div>
+                </div>
+                <div class="sensors-grid" id="sensorsGrid">
+                    <!-- Los sensores se cargarán dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Gráficos mejorados -->
+            <section class="charts-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Monitoreo en Tiempo Real</h2>
+                    <div class="chart-controls">
+                        <div class="time-range">
+                            <label>Período:</label>
+                            <select id="timeRange">
+                                <option value="1">Última hora</option>
+                                <option value="6">Últimas 6 horas</option>
+                                <option value="24" selected>Últimas 24 horas</option>
+                                <option value="168">Última semana</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-container" data-tooltip="Serie temporal del caudal. Usa datos historicos de las ultimas horas." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Variación de Caudal</h3>
+                            <div class="chart-stats" id="flowStats">
+                                <span>Promedio: -</span>
+                                <span>Pico: -</span>
+                            </div>
+                        </div>
+                        <canvas id="flowChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-tooltip="Serie temporal del nivel de agua. Permite ver tendencias." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Nivel de Agua</h3>
+                            <div class="chart-stats" id="levelStats">
+                                <span>Promedio: -</span>
+                                <span>Rango: -</span>
+                            </div>
+                        </div>
+                        <canvas id="levelChart"></canvas>
+                    </div>
+                    <div class="chart-container full-width" data-tooltip="Apertura de compuertas a lo largo del tiempo." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Estado de Compuertas en el Tiempo</h3>
+                            <div class="chart-legend" id="gateChartLegend">
+                                <!-- Leyenda dinámica -->
+                            </div>
+                        </div>
+                        <canvas id="gateChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-tooltip="Precipitacion acumulada en el periodo mostrado." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Precipitación (mm)</h3>
+                            <div class="chart-stats">
+                                <span id="precipStats">Acumulado: - mm</span>
+                            </div>
+                        </div>
+                        <canvas id="precipitationChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-tooltip="Velocidad maxima de viento en el periodo." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Velocidad del Viento (km/h)</h3>
+                            <div class="chart-stats">
+                                <span id="windStats">Máxima: - km/h</span>
+                            </div>
+                        </div>
+                        <canvas id="windChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-tooltip="Temperatura promedio del periodo mostrado." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Temperatura Ambiente (°C)</h3>
+                            <div class="chart-stats">
+                                <span id="tempStats">Promedio: - °C</span>
+                            </div>
+                        </div>
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+                    <div class="chart-container" data-tooltip="Presion atmosferica actual en el periodo." data-tooltip-position="top" data-tooltip-type="info">
+                        <div class="chart-header">
+                            <h3>Presión Atmosférica (hPa)</h3>
+                            <div class="chart-stats">
+                                <span id="pressureStats">Actual: - hPa</span>
+                            </div>
+                        </div>
+                        <canvas id="pressureChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel de alertas -->
+            <section class="alerts-section" id="alertsSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Alertas del Sistema</h2>
+                    <button id="clearAlerts" class="btn-clear">Limpiar</button>
+                </div>
+                <div class="alerts-container" id="alertsContainer">
+                    <!-- Las alertas aparecerán aquí -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="dashboard_extended.js"></script>
+</body>
+</html>

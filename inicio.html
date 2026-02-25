@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación de Bombeo - Sistema de Monitoreo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: transition all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .status-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .status-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .status-value.success {
+            color: #28a745;
+        }
+
+        .status-value.error {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-card {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-water"></i> Sistema de Monitoreo de Estación de Bombeo</h1>
+            <p class="subtitle">Monitoreo integral de bombeo y meteorología</p>
+        </header>
+
+        <div class="status-box" id="statusBox">
+            <div class="status-title">Estado del Sistema</div>
+            <div class="status-item">
+                <span class="status-label">API Flask</span>
+                <span class="status-value" id="flaskStatus">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Base de Datos MySQL</span>
+                <span class="status-value" id="dbStatus">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Simulador ESP32</span>
+                <span class="status-value" id="simulatorStatus">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Puerto de Acceso</span>
+                <span class="status-value success" id="portStatus">9000</span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <a href="/index.html" class="dashboard-card">
+                <div class="dashboard-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="dashboard-title">Estación de Bombeo</div>
+                <div class="dashboard-description">
+                    Monitoreo de compuertas, nivel de agua, caudal y estadísticas diarias en tiempo real
+                </div>
+            </a>
+
+            <a href="/meteorologia.html" class="dashboard-card">
+                <div class="dashboard-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="dashboard-title">Estación Meteorológica</div>
+                <div class="dashboard-description">
+                    Datos de temperatura, humedad, viento, presión, radiación solar y precipitación
+                </div>
+            </a>
+        </div>
+
+        <div class="status-box" style="text-align: center; color: #666; font-size: 12px;">
+            <p>Sistema de Automatización - Promotora Palmera de Antioquia S.A.S. | Febrero 2026</p>
+        </div>
+    </div>
+
+    <script>
+        async function checkSystemStatus() {
+            const apiBase = window.location.origin.replace(':9000', ':9000');
+            
+            // Verificar API Flask
+            try {
+                const response = await fetch(`${apiBase}/api/stations`);
+                document.getElementById('flaskStatus').className = 'status-value success';
+                document.getElementById('flaskStatus').textContent = '✓ Activo';
+            } catch (e) {
+                document.getElementById('flaskStatus').className = 'status-value error';
+                document.getElementById('flaskStatus').textContent = '✗ No disponible';
+            }
+
+            // Verificar Base de Datos
+            try {
+                const response = await fetch(`${apiBase}/api/dashboard?station_id=1`);
+                if (response.ok) {
+                    document.getElementById('dbStatus').className = 'status-value success';
+                    document.getElementById('dbStatus').textContent = '✓ Conectada';
+                } else {
+                    throw new Error('No OK');
+                }
+            } catch (e) {
+                document.getElementById('dbStatus').className = 'status-value error';
+                document.getElementById('dbStatus').textContent = '✗ Desconectada';
+            }
+
+            // Verificar Simulador
+            try {
+                const response = await fetch(`${apiBase}/api/meteorology/latest?station_id=1`);
+                if (response.ok) {
+                    document.getElementById('simulatorStatus').className = 'status-value success';
+                    document.getElementById('simulatorStatus').textContent = '✓ Simulando';
+                } else {
+                    throw new Error('No OK');
+                }
+            } catch (e) {
+                document.getElementById('simulatorStatus').className = 'status-value error';
+                document.getElementById('simulatorStatus').textContent = '✗ Inactivo';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkSystemStatus);
+        setInterval(checkSystemStatus, 5000);
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,24 @@
+monitoreo_compuertas/
+├── 📁 backend/
+│   ├── app.py
+│   ├── config.py
+│   ├── database.py
+│   ├── calculations.py
+│   ├── mqtt_client.py
+│   └── requirements.txt
+├── 📁 frontend/
+│   ├── index.html
+│   ├── styles.css
+│   ├── script.js
+│   └── favicon.ico
+├── 📁 database/
+│   ├── schema.sql
+│   └── sample_data.sql
+├── 📁 docs/
+│   ├── INSTALACION.md
+│   ├── CONFIGURACION.md
+│   └── API_REFERENCE.md
+├── 📁 utils/
+│   └── data_simulator.py
+├── docker-compose.yml
+└── 🚀 iniciar_sistema.bat
